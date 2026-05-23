@@ -1,0 +1,44 @@
+# Models (too large for git)
+models/*.gguf
+models/*.bin
+models/*.safetensors
+
+# Data (never commit client data)
+data/
+/var/sthala/
+
+# Environment
+.env
+.env.local
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+
+# Node (if any tooling)
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.log
+
+# Audit logs (never commit)
+audit/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

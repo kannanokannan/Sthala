@@ -1,0 +1,57 @@
+profile: generic
+version: "0.1"
+description: "Generic document mining — use as base for custom deployments"
+
+hardware:
+  min_ram_gb: 16
+  gpu_required: false
+  tier_recommended: 1
+
+models:
+  primary:
+    recommended: "bartowski/Sarvam-30B-A3B-Instruct-GGUF"
+    quant: "Q4_K_M"
+    hf_link: "https://huggingface.co/bartowski/Sarvam-30B-A3B-Instruct-GGUF"
+    user_override: null
+  verifier:
+    recommended: "Qwen/Qwen2.5-7B-Instruct-GGUF"
+    quant: "Q4_K_M"
+    user_override: null
+  embedder:
+    recommended: "nomic-ai/nomic-embed-text-v1.5"
+    user_override: null
+
+stack:
+  services:
+    - inference
+    - embeddings
+    - vector_db
+    - tabular
+    - job_queue
+    - gateway
+    - proxy
+
+ingestion:
+  sources:
+    - type: file_drop
+      description: "Drop files into /data/input — PDF, Excel, CSV, images"
+      connector: "connectors/file_drop.py"
+      formats: [".pdf", ".xlsx", ".csv", ".txt", ".jpg", ".png"]
+
+ocr:
+  indic_enabled: false
+  primary_backend: "tesseract"
+  languages: ["eng"]
+
+egress:
+  tier_1:
+    stays_local: ["all_raw_data"]
+  tier_2:
+    enabled: false
+  tier_3:
+    enabled: false
+
+outputs:
+  - type: json_api
+    endpoint: "/v1/query"
+  - type: pdf_report

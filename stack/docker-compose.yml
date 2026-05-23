@@ -1,0 +1,199 @@
+version: "3.9"
+
+# Sthala Reference Stack
+# Profile and tier are set via environment variables:
+#   STHALA_PROFILE=ca-firm
+#   STHALA_TIER=2
+#   STHALA_DATA=/var/sthala/data
+
+x-common: &common
+  restart: unless-stopped
+  networks:
+    - sthala
+
+services:
+
+  # ── Inference (GPU Tier 2+) ───────────────────────────────────────────────
+  inference-gpu:
+    image: vllm/vllm-openai:latest
+    container_name: sthala-inference
+    profiles: ["tier2", "tier3", "tier4"]
+    command: >
+      --model /models/${STHALA_PRIMARY_MODEL:-sarvam-30b}
+      --dtype auto
+      --max-model-len 32768
+      --gpu-memory-utilization 0.85
+      --host 0.0.0.0
+      --port 8000
+    volumes:
+      - ${STHALA_DATA:-/var/sthala/data}/models:/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    <<: *common
+
+  # ── Inference (CPU Tier 1) ────────────────────────────────────────────────
+  inference-cpu:
+    image: ghcr.io/ggerganov/llama.cpp:server
+    container_name: sthala-inference
+    profiles: ["tier1"]
+    command: >
+      -m /models/${STHALA_PRIMARY_MODEL:-phi-3-mini-q4.gguf}
+      --host 0.0.0.0
+      --port 8000
+      --threads ${STHALA_CPU_THREADS:-4}
+      --ctx-size 8192
+    volumes:
+      - ${STHALA_DATA:-/var/sthala/data}/models:/models
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    <<: *common
+
+  # ── LiteLLM Gateway (OpenAI-compatible, routes local + optional cloud) ───
+  gateway:
+    image: ghcr.io/berriai/litellm:main-latest
+    container_name: sthala-gateway
+    environment:
+      - LITELLM_CONFIG=/app/config.yaml
+    volumes:
+      - ./config/litellm.yaml:/app/config.yaml:ro
+    ports:
+      - "8080:8080"
+    depends_on:
+      - inference-gpu
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    <<: *common
+
+  # ── Vector Store ──────────────────────────────────────────────────────────
+  vector:
+    image: qdrant/qdrant:latest
+    container_name: sthala-vector
+    volumes:
+      - ${STHALA_DATA:-/var/sthala/data}/vectors:/qdrant/storage
+    ports:
+      - "6333:6333"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    <<: *common
+
+  # ── Object Storage (S3-compatible local) ─────────────────────────────────
+  storage:
+    image: minio/minio:latest
+    container_name: sthala-storage
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_USER:-sthala}
+      - MINIO_ROOT_PASSWORD=${MINIO_PASS:-sthala-local-2026}
+    volumes:
+      - ${STHALA_DATA:-/var/sthala/data}/input:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    <<: *common
+
+  # ── Job Queue (Redis) ─────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: sthala-redis
+    volumes:
+      - ${STHALA_DATA:-/var/sthala/data}/jobs:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    <<: *common
+
+  # ── Ingestion Worker ──────────────────────────────────────────────────────
+  ingest:
+    image: python:3.12-slim
+    container_name: sthala-ingest
+    working_dir: /app
+    command: python -m rq worker --url redis://redis:6379 ingest
+    volumes:
+      - ./stack/ingest:/app
+      - ${STHALA_DATA:-/var/sthala/data}:/data
+    environment:
+      - STHALA_PROFILE=${STHALA_PROFILE:-generic}
+      - INFERENCE_URL=http://gateway:8080/v1
+      - VECTOR_URL=http://vector:6333
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+      - vector
+      - gateway
+    <<: *common
+
+  # ── Web UI ────────────────────────────────────────────────────────────────
+  ui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: sthala-ui
+    environment:
+      - OLLAMA_BASE_URL=http://gateway:8080
+      - WEBUI_SECRET_KEY=${WEBUI_SECRET:-change-me-in-production}
+    volumes:
+      - ${STHALA_DATA:-/var/sthala/data}/ui:/app/backend/data
+    ports:
+      - "3000:8080"
+    depends_on:
+      - gateway
+    <<: *common
+
+  # ── Reverse Proxy (Caddy) ─────────────────────────────────────────────────
+  proxy:
+    image: caddy:2-alpine
+    container_name: sthala-proxy
+    volumes:
+      - ./config/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ${STHALA_DATA:-/var/sthala/data}/caddy:/data
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - ui
+      - gateway
+    <<: *common
+
+  # ── Observability ─────────────────────────────────────────────────────────
+  metrics:
+    image: prom/prometheus:latest
+    container_name: sthala-metrics
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    <<: *common
+
+networks:
+  sthala:
+    driver: bridge

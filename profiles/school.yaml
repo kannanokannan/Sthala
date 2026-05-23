@@ -1,0 +1,101 @@
+profile: school
+version: "0.1"
+description: "School / university administrative AI — attendance, marks, parent queries, scheduling"
+
+hardware:
+  min_ram_gb: 16
+  gpu_required: false
+  tier_recommended: 1
+
+models:
+  primary:
+    recommended: "bartowski/Sarvam-30B-A3B-Instruct-GGUF"
+    quant: "Q4_K_M"
+    hf_link: "https://huggingface.co/bartowski/Sarvam-30B-A3B-Instruct-GGUF"
+    user_override: null
+  verifier:
+    recommended: "Qwen/Qwen2.5-7B-Instruct-GGUF"
+    quant: "Q4_K_M"
+    user_override: null
+  embedder:
+    recommended: "nomic-ai/nomic-embed-text-v1.5"
+    user_override: null
+
+stack:
+  services:
+    - inference
+    - embeddings
+    - vector_db
+    - tabular
+    - ocr
+    - job_queue
+    - gateway
+    - proxy
+
+ingestion:
+  sources:
+    - type: attendance_csv
+      connector: "connectors/excel_duckdb.py"
+      formats: [".csv", ".xlsx"]
+
+    - type: marks_sheet
+      connector: "connectors/excel_duckdb.py"
+      formats: [".xlsx", ".csv"]
+
+    - type: circular_pdf
+      description: "School circulars, notices, exam schedules"
+      connector: "connectors/pdf_ocr.py"
+      formats: [".pdf"]
+
+    - type: parent_query
+      description: "Parent queries via web form / WhatsApp export"
+      connector: "connectors/whatsapp_txt.py"
+      formats: [".txt"]
+
+ocr:
+  indic_enabled: true
+  primary_backend: "bhashini_parseq"
+  fallback_backend: "tesseract"
+  languages: ["tam", "hin", "eng"]
+
+pipeline:
+  stages:
+    - name: ingest
+      output: "DuckDB student/class tables"
+
+    - name: compute
+      engine: duckdb
+      examples:
+        - "Class-wise attendance % by month"
+        - "Subject-wise average marks trend"
+        - "Defaulter list (attendance < 75%)"
+        - "Fee collection status summary"
+        - "PTM scheduling optimisation"
+
+    - name: respond
+      description: "Answer parent/admin queries using RAG over school documents"
+      model: primary
+      rag_sources: ["circulars", "schedule", "fee_structure"]
+
+    - name: report
+      engine: python
+
+egress:
+  tier_1:
+    stays_local:
+      - student_data
+      - marks_data
+      - parent_contact
+      - financial_data
+  tier_2:
+    enabled: false
+    note: "Student data never leaves — DPDP minor data protections apply"
+  tier_3:
+    enabled: false
+
+outputs:
+  - type: pdf_report
+    template: "templates/school-report.html"
+  - type: parent_chatbot
+    interface: "web_console"
+    note: "Offline Q&A for parents — answers from local documents only"

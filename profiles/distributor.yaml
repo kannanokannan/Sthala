@@ -1,0 +1,126 @@
+profile: distributor
+version: "0.1"
+description: "Distributor / wholesale trader — sales trend mining, seasonal analysis, inventory intelligence"
+
+hardware:
+  min_ram_gb: 32
+  gpu_required: false
+  gpu_vram_gb: 0
+  min_disk_gb: 200
+  tier_recommended: 2
+
+models:
+  primary:
+    recommended: "bartowski/Sarvam-30B-A3B-Instruct-GGUF"
+    quant: "Q6_K"
+    hf_link: "https://huggingface.co/bartowski/Sarvam-30B-A3B-Instruct-GGUF"
+    user_override: null
+  verifier:
+    recommended: "Qwen/Qwen2.5-7B-Instruct-GGUF"
+    quant: "Q4_K_M"
+    user_override: null
+  embedder:
+    recommended: "nomic-ai/nomic-embed-text-v1.5"
+    user_override: null
+
+stack:
+  services:
+    - inference
+    - verifier
+    - embeddings
+    - vector_db
+    - tabular
+    - ocr
+    - job_queue
+    - gateway
+    - proxy
+    - metrics
+
+ingestion:
+  sources:
+    - type: tally
+      connector: "connectors/tally_odbc.py"
+      incremental: true
+      formats: [".900", ".1800", "odbc"]
+
+    - type: excel
+      connector: "connectors/excel_duckdb.py"
+      formats: [".xlsx", ".xls", ".csv"]
+
+    - type: pdf_invoice
+      connector: "connectors/pdf_ocr.py"
+      ocr_backend: "bhashini_parseq"
+      formats: [".pdf", ".jpg", ".png"]
+
+    - type: whatsapp_export
+      connector: "connectors/whatsapp_txt.py"
+      description: "WhatsApp Business chat exports containing orders/invoices"
+      formats: [".txt", ".zip"]
+
+ocr:
+  indic_enabled: true
+  primary_backend: "bhashini_parseq"
+  fallback_backend: "tesseract"
+  languages: ["tam", "hin", "eng"]
+
+pipeline:
+  stages:
+    - name: ingest
+      output: "DuckDB raw sales tables"
+
+    - name: normalise
+      description: "Unify product names, resolve SKU variants, normalise customer names"
+      llm_role: "Fuzzy matching only"
+      deterministic: "DuckDB transforms"
+
+    - name: extract
+      description: "Extract line-item data from unstructured invoices/WhatsApp orders"
+      model: primary
+      verification: true
+
+    - name: compute
+      engine: duckdb
+      examples:
+        - "Monthly revenue by product category"
+        - "Seasonal demand index by SKU"
+        - "Customer concentration risk (top-10 as % of revenue)"
+        - "Payment delay trends by party"
+        - "Region-wise sales distribution"
+        - "YoY growth by category"
+
+    - name: anomaly
+      engine: python
+      flags: ["demand_spike", "stockout_risk", "slow_moving_sku", "payment_delay_spike"]
+
+    - name: narrate
+      model: primary
+      input: "Aggregated JSON only"
+
+    - name: report
+      engine: python
+      includes_source_references: true
+
+egress:
+  tier_1:
+    stays_local:
+      - raw_sales_data
+      - customer_names
+      - per_invoice_data
+      - pricing_data
+  tier_2:
+    enabled: true
+    requires_approval: true
+    allowed:
+      - monthly_aggregates
+      - category_trends
+      - anomaly_flags
+  tier_3:
+    enabled: false
+    targets: []
+
+outputs:
+  - type: pdf_report
+    template: "templates/distributor-report.html"
+  - type: excel_export
+  - type: json_api
+    endpoint: "/v1/query"
