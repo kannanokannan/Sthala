@@ -1,0 +1,13 @@
+extends: ../../../profiles/generic.yaml
+country: eu
+language: [en, de, fr, nl, pl]
+egress:
+  tier: 1   # GDPR compliance — nothing leaves
+
+# EU-specific model override
+models:
+  primary:
+    recommended: "meta-llama/Llama-3.1-8B-Instruct-GGUF"
+    user_override: null
+  regional_override:
+    fr: "mistralai/Mistral-7B-Instruct-v0.3-GGUF"

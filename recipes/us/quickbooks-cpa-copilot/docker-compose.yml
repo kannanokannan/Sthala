@@ -1,0 +1,12 @@
+include:
+  - ../../../stack/inference/docker-compose.yml
+  - ../../../stack/rag/docker-compose.yml
+  - ../../../stack/ingestion/docker-compose.yml
+  - ../../../stack/observability/docker-compose.yml
+
+services:
+  ingest:
+    environment:
+      - STHALA_PROFILE=accounting-firm
+      - STHALA_RECIPE=us/quickbooks-cpa-copilot
+      - STHALA_COUNTRY=us

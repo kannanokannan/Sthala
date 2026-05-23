@@ -1,0 +1,5 @@
+extends: ../../../profiles/generic.yaml
+country: global
+language: en
+egress:
+  tier: 1

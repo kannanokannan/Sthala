@@ -1,0 +1,12 @@
+extends: ../../../profiles/accounting-firm.yaml
+country: us
+erp: quickbooks
+language: en
+egress:
+  tier: 2
+
+# US-specific model override — English-only deployment
+models:
+  primary:
+    recommended: "meta-llama/Llama-3.1-8B-Instruct-GGUF"
+    user_override: null
