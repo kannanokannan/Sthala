@@ -1,0 +1,13 @@
+include:
+  - ../../../stack/inference/docker-compose.yml
+  - ../../../stack/rag/docker-compose.yml
+  - ../../../stack/ingestion/docker-compose.yml
+  - ../../../stack/observability/docker-compose.yml
+
+# Recipe-level overrides — add only what differs from the base stack
+services:
+  ingest:
+    environment:
+      - STHALA_PROFILE=generic          # match profile.yaml extends
+      - STHALA_RECIPE=global/_template  # update to your recipe path
+      - STHALA_COUNTRY=global           # match profile.yaml country

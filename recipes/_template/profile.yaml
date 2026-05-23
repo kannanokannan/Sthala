@@ -1,0 +1,15 @@
+# Recipe profile — copy and edit for your recipe
+# extends: path to a base profile in /profiles/
+# All fields below are required.
+
+extends: ../../../profiles/generic.yaml
+country: global        # ISO 3166-1 alpha-2, or "global"
+language: en           # primary language(s) of source documents
+
+egress:
+  tier: 1              # 1=never leaves | 2=anonymised+consent | 3=API+consent
+
+# Override models only if the base profile defaults are wrong for this recipe
+# models:
+#   inference:
+#     user_override: "org/model-GGUF"
