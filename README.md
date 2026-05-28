@@ -122,3 +122,17 @@ Apache 2.0 — use it, fork it, ship it, build on it.
 [Kannan Okannan](https://github.com/kannanokannan) — Chennai, India
 
 *Part of the ContextOps / ContextBoundary / Sthala open-source family.*
+
+---
+
+## Part of the Stack
+
+This project is one of three sibling open-source projects under [github.com/kannanokannan](https://github.com/kannanokannan).
+
+| Project | Question | Repo |
+|---------|----------|------|
+| ContextOps | How does an org govern its AI context? | [github.com/kannanokannan/ContextOps](https://github.com/kannanokannan/ContextOps) |
+| ContextBoundary | Where is data allowed to go? | [github.com/kannanokannan/ContextBoundary](https://github.com/kannanokannan/ContextBoundary) |
+| Sthala | Where does the AI actually run? | [github.com/kannanokannan/Sthala](https://github.com/kannanokannan/Sthala) |
+
+Canonical terminology and cross-project decisions: [context-stack](https://github.com/kannanokannan/context-stack)

@@ -4,6 +4,16 @@ This file provides complete context for AI coding agents (Claude Code, Cursor, A
 
 ---
 
+## Canonical Reference
+
+Before introducing any new term: check https://github.com/kannanokannan/context-stack/blob/main/GLOSSARY.md
+
+Before making any cross-project decision: check https://github.com/kannanokannan/context-stack/blob/main/DECISIONS.md
+
+Terminology defined in GLOSSARY.md overrides any local usage in this repo.
+
+---
+
 ## What Sthala Is
 
 Sthala is a **reference framework** for deploying sovereign on-premise AI on commodity x86 hardware. It is not a product, not a SaaS, not a cloud service. It is a documented pattern + reference implementation that organisations deploy on their own hardware.
