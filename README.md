@@ -2,7 +2,9 @@
 
 **Your AI's place.**
 
-Sthala is an open-source reference framework for deploying sovereign, on-premise AI on commodity and refurbished x86 hardware. It targets SMBs, schools, CA firms, distributors, clinics, and any organisation where data must not leave the building.
+Most AI deployments let LLMs touch everything — computation, decisions, execution. That's the failure mode. Sthala is built on one hard constraint: LLMs narrate, code executes. Always. Enforced at build time.
+
+An open-source reference framework for sovereign, on-premise AI on commodity x86 hardware. Airgapped by default. Built for SMBs, CA firms, clinics, schools — any organisation where data must not leave the building.
 
 > *"Sthala" (स्थल / ஸ்தலம்) — place, site, ground. Where your AI actually runs.*
 
