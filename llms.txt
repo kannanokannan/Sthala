@@ -1,0 +1,24 @@
+# Sthala
+
+> Open-source sovereign on-premise AI reference framework for commodity x86 hardware. Airgapped by default. Core constraint: LLMs narrate, code computes — enforced at build time.
+
+Sthala is one of three sibling open-source projects under github.com/kannanokannan that together define an AI governance stack:
+
+- ContextOps — How does an organisation govern its AI context?
+- ContextBoundary — Where is data allowed to go?
+- Sthala — Where does the AI actually run?
+
+License: Apache 2.0. Status: v0.1 Alpha.
+
+## Core
+
+- [SPEC.md](https://github.com/kannanokannan/Sthala/blob/main/SPEC.md): Architecture and six-layer pipeline specification
+- [AGENTS.md](https://github.com/kannanokannan/Sthala/blob/main/AGENTS.md): Machine-readable build contract for LLM coding agents; also the primary human-readable developer guide
+- [CLAUDE.md](https://github.com/kannanokannan/Sthala/blob/main/CLAUDE.md): Agent briefing
+- [README.md](https://github.com/kannanokannan/Sthala/blob/main/README.md): Project overview
+
+## Related projects
+
+- [context-stack](https://github.com/kannanokannan/context-stack): Canonical terminology, locked decisions, and family framing for all three projects
+- [ContextOps](https://github.com/kannanokannan/ContextOps): AI context governance framework
+- [ContextBoundary](https://github.com/kannanokannan/ContextBoundary): Egress governance specification for AI data flows
