@@ -10,7 +10,7 @@
 
 Distributors and wholesale traders accumulate years of sales data in Tally, Excel, and WhatsApp-based orders. Trend analysis is done manually in Excel — slow, error-prone, and limited in depth. Sending data to cloud AI is a trust and competitive risk.
 
-**Sthala Sales Trend Mining:** Runs on your box overnight. Ingests Tally, Excel, PDF invoices, and WhatsApp orders. Produces a seasonal trend report, anomaly flags, and natural-language commentary — all without data leaving the premises.
+**Sthala Sales Trend Mining:** Runs inside your approved runtime boundary overnight. Ingests Tally, Excel, PDF invoices, and WhatsApp orders. Produces a seasonal trend report, anomaly flags, and natural-language commentary — all without data crossing the approved boundary.
 
 ---
 

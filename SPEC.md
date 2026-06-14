@@ -1,7 +1,7 @@
 # Sthala Framework Specification
 
 **Version:** 0.1.0
-**Status:** Draft
+**Status:** v0.1 Alpha
 **Date:** 2026-05-23
 **Author:** Kannan Okannan
 
@@ -9,9 +9,9 @@
 
 ## 1. Purpose
 
-Sthala defines a reference architecture for deploying sovereign, on-premise AI workloads on commodity and refurbished x86 hardware. It targets organisations where:
+Sthala defines a reference architecture for governed AI runtime placement on commodity and refurbished x86 hardware. It targets organisations where:
 
-- Data cannot leave the premises (compliance, sovereignty, trust)
+- Data movement must remain under explicit boundary control
 - Cloud AI costs are prohibitive
 - IT staff is minimal or absent
 - Batch processing tolerance is acceptable (hours to days)
@@ -24,11 +24,11 @@ Sthala is a **framework** (documented pattern + reference implementation), not a
 ## 2. Scope
 
 **In scope:**
-- On-premise x86 deployment (bare metal, not VM-primary)
+- Boundary-controlled x86 deployment (bare metal, not VM-primary)
 - Batch inference workloads (document mining, RAG, trend analysis)
 - CPU-only and single-consumer-GPU configurations
 - Indic language workloads (Tamil, Hindi, Telugu, Kannada, Bengali, Marathi)
-- Hybrid egress pattern (local-first, optional paid API for narrative)
+- Hybrid egress pattern (boundary-first, optional paid API for narrative)
 
 **Out of scope:**
 - Kubernetes at scale (k3s optional, not required)
@@ -109,7 +109,7 @@ The system boots directly into its AI function. No general-purpose escape hatch.
 | Component | Choice | Rationale |
 |---|---|---|
 | Tabular engine | DuckDB | Columnar, embedded, handles Excel/Parquet/CSV |
-| Vector store | Qdrant (embedded mode) | No external server, local-first |
+| Vector store | Qdrant (embedded mode) | No external server, boundary-first |
 | Document parser | Docling / Unstructured.io | PDFs, scanned docs, mixed formats |
 | OCR (Indic) | Bhashini PARSeq / IndicPhotoOCR | 73%+ WRR vs Tesseract 15% on Indic scripts |
 | Job queue | Python RQ + Redis | Lightweight, batch-suitable |
@@ -212,14 +212,14 @@ The system boots directly into its AI function. No general-purpose escape hatch.
 - High-risk verticals (medical, legal) must implement additional controls per `docs/eu-ai-act-checklist.md` *(planned)*
 
 ### 7.4 India DPDP Act 2023
-- Data stays on-premise by design (Tier I default)
+- Data stays inside the approved boundary by design (Tier I default)
 - Consent mechanism built into egress gateway
 - Audit log satisfies accountability principle
 - No cross-border transfer without explicit Tier III escalation + consent
 
 ### 7.5 MCA Companies Rules 2022
 - Daily backup mandate satisfied by local MinIO + scheduled DuckDB snapshots
-- Backup stays on Indian soil by design
+- Backup stays inside the approved jurisdictional boundary by design
 
 ---
 
@@ -271,10 +271,10 @@ egress_policy:
 | Framework | Governs |
 |---|---|
 | ContextOps | How AI context is captured, curated, supplied, and renewed across an organisation |
-| ContextBoundary | Where AI context can flow — defines egress contracts and privacy tiers |
-| Sthala | Where AI physically runs — the execution substrate that implements ContextBoundary contracts |
+| ContextBoundary | Where AI context can flow — defines egress contracts and Egress Tiers |
+| Sthala | Where AI runs — the runtime placement reference that implements ContextBoundary contracts |
 
-Sthala is the runtime layer. It does not define policy (ContextOps) or contracts (ContextBoundary). It enforces them.
+Sthala is the runtime placement layer. It does not define context lifecycle governance (ContextOps) or egress contracts (ContextBoundary). It implements them.
 
 ---
 

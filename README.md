@@ -4,7 +4,7 @@
 
 Most AI deployments let LLMs touch everything — computation, decisions, execution. That's the failure mode. Sthala is built on one hard constraint: LLMs narrate, code executes. Always. Enforced at build time.
 
-An open-source reference framework for sovereign, on-premise AI on commodity x86 hardware. Airgapped by default. Built for SMBs, CA firms, clinics, schools — any organisation where data must not leave the building.
+An open-source reference framework for governed AI runtime placement on commodity x86 hardware. Airgapped by default. Built for SMBs, CA firms, clinics, schools — any organisation where data movement must stay under explicit boundary control.
 
 > *"Sthala" (स्थल / ஸ்தலம்) — place, site, ground. Where your AI actually runs.*
 
@@ -25,7 +25,7 @@ Full doctrine: https://github.com/kannanokannan/context-stack
 - **Cloud AI is expensive** — 3-year TCO cloud vs Sthala appliance: ~6× savings
 - **Compliance is tightening** — EU AI Act (Aug 2026), India DPDP Act (Stage 2: Nov 2026), MCA backup mandates
 - **LLMs are commodities** — the moat is the pipeline, not the model
-- **Refurb hardware works** — a ₹1.5L box serves 50–200 concurrent SMB users on 7B–34B models
+- **Refurb hardware works** — a ₹1.5L node serves 50–200 concurrent SMB users on 7B–34B models
 
 Sthala is **not** a product. It is a documented pattern. Read it, fork it, deploy it, adapt it.
 
@@ -45,7 +45,7 @@ Sthala is **not** a product. It is a documented pattern. Read it, fork it, deplo
 
 ```
 Boot a commodity PC → drop your data → get AI-powered analysis
-Nothing leaves your box unless you explicitly approve it
+Nothing crosses the approved boundary unless you explicitly approve it
 ```
 
 - Immutable Linux base (no drift, atomic updates)

@@ -1,6 +1,6 @@
 # Sthala
 
-> Open-source sovereign on-premise AI reference framework for commodity x86 hardware. Airgapped by default. Core constraint: LLMs narrate, code computes — enforced at build time.
+> Open-source governed AI runtime placement reference framework for commodity x86 hardware. Airgapped by default. Core constraint: LLMs narrate, code computes — enforced at build time.
 
 Sthala is one of three sibling open-source projects under github.com/kannanokannan that together define an AI governance stack:
 

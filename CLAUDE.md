@@ -16,11 +16,11 @@ Terminology defined in GLOSSARY.md overrides any local usage in this repo.
 
 ## What Sthala Is
 
-Sthala is a **reference framework** for deploying sovereign on-premise AI on commodity x86 hardware. It is not a product, not a SaaS, not a cloud service. It is a documented pattern + reference implementation that organisations deploy on their own hardware.
+Sthala is a **reference framework** for governed AI runtime placement on commodity x86 hardware. It is not a product, not a SaaS, not a cloud service. It is a documented pattern + reference implementation that organisations deploy under their own operating boundary.
 
-Target users: SMBs, CA firms, distributors, schools, clinics in India and globally, where data cannot leave the premises.
+Target users: SMBs, CA firms, distributors, schools, clinics in India and globally, where data movement must stay inside approved boundaries.
 
-**The core promise:** Boot a commodity PC → point at your data → get AI-powered analysis. Nothing leaves the box without explicit human approval.
+**The core promise:** Boot a commodity PC → point at your data → get AI-powered analysis. Nothing crosses the approved boundary without explicit human approval.
 
 ---
 
@@ -179,14 +179,14 @@ Every model entry must have: HuggingFace link, license, size (GB), min RAM, GPU 
 - Do not hardcode model names, ports, or paths in service code (read from profile)
 - Do not let an LLM compute or aggregate numbers (always route through DuckDB/Python)
 - Do not expose sensitive data in logs (audit log is for actions, not data)
-- Do not require internet at runtime (install.sh may need internet; running box must not)
+- Do not require internet at runtime (install.sh may need internet; runtime operation must not)
 - Do not add dependencies that break CPU-only operation
 
 ---
 
 ## Current Status
 
-**SPEC Version:** 0.1.0 (Draft)
+**SPEC Version:** 0.1.0
 **Active recipes:** tally-ca-copilot (WIP), sales-trend-mining (WIP)
 **Stack status:** docker-compose skeleton (not yet production-tested)
 **Hardware detect:** basic CPU/GPU detection (expand coverage needed)
@@ -198,7 +198,7 @@ Every model entry must have: HuggingFace link, license, size (GB), min RAM, GPU 
 - **ContextOps** — `https://github.com/kannanokannan/ContextOps` — AI context governance
 - **ContextBoundary** — `https://github.com/kannanokannan/ContextBoundary` — Egress contracts
 
-Sthala is the execution layer. ContextOps defines policy. ContextBoundary defines what can flow where. The three projects are complementary, not dependent.
+Sthala is the runtime placement layer. ContextOps governs context lifecycle. ContextBoundary defines what can flow where. The three projects are complementary, with Sthala consuming ContextBoundary's egress contract.
 
 ---
 
