@@ -1,0 +1,88 @@
+version: "3.9"
+
+# Sthala — Inference stack
+# GPU (Tier 2+): vLLM with PagedAttention
+# CPU (Tier 1):  llama.cpp server
+# Both expose OpenAI-compatible API on port 8000
+
+x-common: &common
+  restart: unless-stopped
+  networks:
+    - sthala
+
+services:
+
+  # ── GPU inference (Tier 2+) ───────────────────────────────────────────────
+  inference-gpu:
+    image: vllm/vllm-openai:latest
+    container_name: sthala-inference
+    profiles: ["tier2", "tier3", "tier4"]
+    command: >
+      --model /models/${STHALA_PRIMARY_MODEL:-meta-llama/Llama-3.1-8B-Instruct-GGUF}
+      --dtype auto
+      --max-model-len 32768
+      --gpu-memory-utilization 0.85
+      --host 0.0.0.0
+      --port 8000
+    volumes:
+      - ${STHALA_DATA:-/var/sthala/data}/models:/models
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    <<: *common
+
+  # ── CPU inference (Tier 1) ────────────────────────────────────────────────
+  inference-cpu:
+    image: ghcr.io/ggerganov/llama.cpp:server
+    container_name: sthala-inference
+    profiles: ["tier1"]
+    command: >
+      -m /models/${STHALA_PRIMARY_MODEL:-phi-3-mini-q4.gguf}
+      --host 0.0.0.0
+      --port 8000
+      --threads ${STHALA_CPU_THREADS:-4}
+      --ctx-size 8192
+    volumes:
+      - ${STHALA_DATA:-/var/sthala/data}/models:/models
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    <<: *common
+
+  # ── LiteLLM gateway (OpenAI-compatible, routes local + optional cloud) ───
+  gateway:
+    image: ghcr.io/berriai/litellm:main-latest
+    container_name: sthala-gateway
+    environment:
+      - LITELLM_CONFIG=/app/config.yaml
+    volumes:
+      - ../../config/litellm.yaml:/app/config.yaml:ro
+    ports:
+      - "8080:8080"
+    depends_on:
+      - inference-gpu
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    <<: *common
+
+networks:
+  sthala:
+    driver: bridge

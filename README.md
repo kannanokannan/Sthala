@@ -77,26 +77,37 @@ sthala/
 ├── SPEC.md                    ← Framework specification
 ├── AGENTS.md                  ← Machine-readable build contract for AI coding agents
 ├── CLAUDE.md                  ← Context file for Claude / AI assistants
+├── CONTRIBUTING.md            ← Contribution guide
 ├── install.sh                 ← Idempotent bootstrap script
 ├── profiles/                  ← Vertical presets
 │   ├── generic.yaml
-│   ├── ca-firm.yaml
+│   ├── accounting-firm.yaml
+│   ├── clinic.yaml
 │   ├── distributor.yaml
 │   └── school.yaml
 ├── hardware/
 │   └── detect.sh              ← Auto-detect CPU/GPU/RAM, recommend tier
 ├── stack/
-│   └── docker-compose.yml     ← Full service stack
-├── models/
-│   └── models.md              ← Curated model catalog with HuggingFace links
+│   ├── docker-compose.yml     ← Full service stack
+│   ├── inference/             ← Inference services
+│   ├── ingestion/             ← Ingestion services
+│   ├── observability/         ← Metrics and tracing
+│   └── rag/                   ← Retrieval services
 ├── recipes/
-│   ├── tally-ca-copilot/      ← CA firm + Tally integration recipe
-│   └── sales-trend-mining/    ← Distributor trend analysis recipe
+│   ├── _template/             ← Six-stage recipe template
+│   ├── in/                    ← India recipes
+│   ├── eu/                    ← EU recipes
+│   ├── us/                    ← US recipes
+│   └── global/                ← Global recipes
 ├── research/
 │   ├── 2026-05-market.md      ← India SMB AI market research
 │   └── 2026-05-standards.md   ← Standards & academic landscape
 └── docs/
-    └── architecture.md        ← Architecture deep-dive
+    ├── architecture.md        ← Architecture deep-dive
+    ├── compliance.md          ← Compliance notes
+    ├── egress.md              ← Egress guidance
+    ├── hardware.md            ← Hardware guidance
+    └── models.md              ← Curated model catalog with HuggingFace links
 ```
 
 ---

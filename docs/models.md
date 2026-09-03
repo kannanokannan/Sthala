@@ -1,6 +1,6 @@
 # Sthala Model Catalog
 
-Curated models for Sthala deployments. All models are open license (Apache 2.0 or MIT unless noted). Tested on Tier 1–3 hardware.
+Curated models for Sthala deployments. All models are open license (Apache 2.0 or MIT unless noted). Tested against the hardware tiers in SPEC.md.
 
 **To use a custom model:** set `user_override` in your profile YAML. Sthala will warn on hardware incompatibility but will not block.
 
@@ -8,9 +8,25 @@ Browse more: [HuggingFace GGUF models (trending)](https://huggingface.co/models?
 
 ---
 
-## Default Model
+## Global Default Model
 
-### Sarvam-30B (Recommended)
+### Llama 3.1 8B
+
+| Property | Value |
+|---|---|
+| HuggingFace | [meta-llama/Llama-3.1-8B-Instruct-GGUF](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct-GGUF) |
+| License | Llama 3.1 Community (commercial use allowed >700M MAU restriction) |
+| GGUF size | Q4_K_M: ~5GB |
+| Min RAM | 12GB / 8GB VRAM |
+| Good at | English RAG, code, structured extraction |
+| Bad at | Indic languages (limited tokenizer) |
+| Sthala role | Global default primary model for Tier 1 deployments |
+
+---
+
+## Regional Specialist Models
+
+### Sarvam-30B (Indic Recommended)
 
 | Property | Value |
 |---|---|
@@ -25,7 +41,7 @@ Browse more: [HuggingFace GGUF models (trending)](https://huggingface.co/models?
 | Agentic tool-calling | Yes |
 | Good at | Indic document extraction, Indian SMB context, multilingual RAG, structured output |
 | Bad at | Long mathematical reasoning chains, very recent events |
-| Sthala role | Primary inference model |
+| Sthala role | Regional override for Indic document extraction and narration |
 
 ---
 
@@ -46,7 +62,7 @@ Browse more: [HuggingFace GGUF models (trending)](https://huggingface.co/models?
 
 ---
 
-## Tiny Models (Tier 1 / CPU-only)
+## Tiny Models (Tier 0 / CPU-only)
 
 ### Phi-3 Mini (3.8B)
 
@@ -60,7 +76,7 @@ Browse more: [HuggingFace GGUF models (trending)](https://huggingface.co/models?
 | Speed (CPU) | 8–15 tok/s on Core i7 |
 | Good at | Short document classification, intent detection, routing |
 | Bad at | Long documents, Indic languages |
-| Sthala role | Tier 1 primary, or fast routing classifier |
+| Sthala role | Tier 0 primary, or fast routing classifier |
 
 ### Gemma 2 2B
 
@@ -89,19 +105,7 @@ Browse more: [HuggingFace GGUF models (trending)](https://huggingface.co/models?
 
 ---
 
-## Small Models (Tier 2 / 16–24GB VRAM)
-
-### Llama 3.1 8B
-
-| Property | Value |
-|---|---|
-| HuggingFace | [meta-llama/Llama-3.1-8B-Instruct-GGUF](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct-GGUF) |
-| License | Llama 3.1 Community (commercial use allowed >700M MAU restriction) |
-| GGUF size | Q4_K_M: ~5GB |
-| Min RAM | 12GB / 8GB VRAM |
-| Good at | English RAG, code, structured extraction |
-| Bad at | Indic languages (limited tokenizer) |
-| Sthala role | English-only SMB deployments |
+## Small Models (Tier 1 / 16-24GB VRAM)
 
 ### Mistral 7B v0.3
 
@@ -202,5 +206,5 @@ Browse more: [HuggingFace GGUF models (trending)](https://huggingface.co/models?
 
 ---
 
-*Model catalog is community-maintained. Submit additions via PR to `models/models.md`.*
+*Model catalog is community-maintained. Submit additions via PR to `docs/models.md`.*
 *Always verify license compatibility with your deployment context.*

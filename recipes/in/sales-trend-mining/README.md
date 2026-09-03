@@ -153,7 +153,7 @@ cp whatsapp-export.txt /var/sthala/data/input/whatsapp/
 
 ### Step 2 — Run
 ```bash
-bash recipes/sales-trend-mining/run.sh
+bash recipes/in/sales-trend-mining/run.sh
 ```
 
 ### Step 3 — Review & collect
@@ -168,7 +168,7 @@ ls /var/sthala/data/output/
 ## Verification
 
 ```bash
-bash recipes/sales-trend-mining/verify.sh
+bash recipes/in/sales-trend-mining/verify.sh
 
 # ✓ sales_fact table populated
 # ✓ Monthly trend query returns 12+ months

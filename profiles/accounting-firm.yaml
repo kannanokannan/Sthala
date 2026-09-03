@@ -1,6 +1,6 @@
-profile: ca-firm
+profile: accounting-firm
 version: "0.1"
-description: "Chartered Accountant firm — Tally data mining, GST trend analysis, client document intelligence"
+description: "Accounting / CA firm — Tally data mining, GST trend analysis, client document intelligence"
 
 # ── Hardware Requirements ─────────────────────────────────────────────────────
 hardware:

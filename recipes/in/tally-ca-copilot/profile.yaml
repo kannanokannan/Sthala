@@ -1,0 +1,6 @@
+extends: ../../../profiles/accounting-firm.yaml
+country: in
+erp: tallyprime
+language: [en, hi, ta]
+egress:
+  tier: 2

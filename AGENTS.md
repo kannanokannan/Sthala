@@ -89,7 +89,7 @@ If detect.sh fails:
 Map Q1 answer to profile file:
 
 ```
-ca-firm     → profiles/ca-firm.yaml
+accounting-firm → profiles/accounting-firm.yaml
 distributor → profiles/distributor.yaml
 school      → profiles/school.yaml
 generic     → profiles/generic.yaml

@@ -155,7 +155,7 @@ cp your-invoices/*.pdf /var/sthala/data/input/invoices/
 
 ### Step 3 — Run the recipe
 ```bash
-bash recipes/tally-ca-copilot/run.sh
+bash recipes/in/tally-ca-copilot/run.sh
 ```
 
 ### Step 4 — Monitor
@@ -185,7 +185,7 @@ ls /var/sthala/data/output/
 ## Verification
 
 ```bash
-bash recipes/tally-ca-copilot/verify.sh
+bash recipes/in/tally-ca-copilot/verify.sh
 
 # Expected output:
 # ✓ DuckDB tables populated (vouchers, ledgers, parties)
@@ -232,6 +232,6 @@ AR Aging Summary (as at 31-Mar-2025):
 
 ## Related
 
-- Profile: `profiles/ca-firm.yaml`
+- Profile: `profiles/accounting-firm.yaml`
 - Connector: `connectors/tally_odbc.py` *(coming)*
 - Template: `templates/ca-firm-report.html` *(coming)*
