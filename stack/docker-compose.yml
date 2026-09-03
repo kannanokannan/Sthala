@@ -2,7 +2,7 @@ version: "3.9"
 
 # Sthala Reference Stack
 # Profile and tier are set via environment variables:
-#   STHALA_PROFILE=ca-firm
+#   STHALA_PROFILE=accounting-firm
 #   STHALA_TIER=2
 #   STHALA_DATA=/var/sthala/data
 

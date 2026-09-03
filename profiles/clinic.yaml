@@ -1,0 +1,130 @@
+profile: clinic
+version: "0.1"
+description: "Clinic / hospital — patient record intelligence, prescription mining, appointment analytics"
+
+# ── Hardware Requirements ─────────────────────────────────────────────────────
+hardware:
+  min_ram_gb: 32
+  gpu_required: false
+  gpu_vram_gb: 0
+  min_disk_gb: 500    # medical records are large
+  tier_recommended: 2
+
+# ── Models ────────────────────────────────────────────────────────────────────
+models:
+  primary:
+    recommended: "meta-llama/Llama-3.1-8B-Instruct-GGUF"
+    quant: "Q4_K_M"
+    hf_link: "https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct-GGUF"
+    user_override: null
+  verifier:
+    recommended: "Qwen/Qwen2.5-7B-Instruct-GGUF"
+    quant: "Q4_K_M"
+    user_override: null
+  embedder:
+    recommended: "nomic-ai/nomic-embed-text-v1.5"
+    user_override: null
+  regional_override:
+    in: "bartowski/Sarvam-30B-A3B-Instruct-GGUF"  # Indic-native for Indian clinics
+
+# ── Stack Services ────────────────────────────────────────────────────────────
+stack:
+  services:
+    - inference
+    - verifier
+    - embeddings
+    - vector_db
+    - tabular
+    - ocr
+    - job_queue
+    - gateway
+    - proxy
+    - metrics
+
+# ── Ingestion Sources ─────────────────────────────────────────────────────────
+ingestion:
+  sources:
+    - type: patient_records
+      description: "Structured patient records (HL7 FHIR / CSV export from HMS)"
+      connector: "connectors/excel_duckdb.py"
+      formats: [".csv", ".xlsx", ".json"]
+
+    - type: prescription_pdf
+      description: "Scanned handwritten and printed prescriptions"
+      connector: "connectors/pdf_ocr.py"
+      ocr_backend: "bhashini_parseq"
+      formats: [".pdf", ".jpg", ".png"]
+
+    - type: lab_report
+      description: "Lab reports in PDF or structured format"
+      connector: "connectors/pdf_ocr.py"
+      formats: [".pdf", ".csv"]
+
+# ── OCR Settings ──────────────────────────────────────────────────────────────
+ocr:
+  indic_enabled: true
+  primary_backend: "bhashini_parseq"
+  fallback_backend: "tesseract"
+  languages: ["tam", "hin", "eng"]
+  min_dpi: 300    # medical documents require higher DPI
+
+# ── Pipeline ─────────────────────────────────────────────────────────────────
+pipeline:
+  stages:
+    - name: ingest
+      output: "DuckDB patient/visit tables"
+
+    - name: extract
+      description: "Extract structured data from prescriptions and lab reports"
+      model: primary
+      verification: true
+
+    - name: verify
+      model: verifier
+      reject_threshold: 0.85   # higher threshold for medical data
+
+    - name: compute
+      engine: duckdb
+      examples:
+        - "Patient visit frequency by month"
+        - "Top diagnoses by frequency"
+        - "Prescription pattern analysis"
+        - "Lab result trend per patient (anonymised)"
+        - "Appointment no-show rate"
+
+    - name: narrate
+      model: primary
+      input: "Anonymised aggregates only — no patient identifiers"
+
+    - name: report
+      engine: python
+      includes_source_references: true
+
+# ── Egress Policy ─────────────────────────────────────────────────────────────
+egress:
+  tier_1:
+    stays_local:
+      - patient_names
+      - patient_ids
+      - diagnosis_data
+      - prescription_data
+      - lab_results
+      - contact_details
+      - financial_data
+
+  tier_2:
+    enabled: false
+    note: "Medical data — no egress without explicit DPO approval and patient consent"
+
+  tier_3:
+    enabled: false
+    note: "Never enabled for patient data by default"
+
+# ── Output Formats ────────────────────────────────────────────────────────────
+outputs:
+  - type: pdf_report
+    template: "templates/clinic-report.html"
+    includes: [aggregate_charts, trend_tables, anomaly_flags]
+  - type: json_api
+    endpoint: "/v1/query"
+    note: "Natural language queries on anonymised aggregates only"

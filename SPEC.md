@@ -177,12 +177,12 @@ The system boots directly into its AI function. No general-purpose escape hatch.
 ### 6.1 CA Firm — Tally Copilot
 **Problem:** CA firms have years of Tally data, no safe way to query trends, client data cannot go to cloud.
 **Stack additions:** Tally TDL/ODBC connector, DuckDB GST schema, Indic OCR for scanned vouchers
-**Recipe:** `recipes/tally-ca-copilot/`
+**Recipe:** `recipes/in/tally-ca-copilot/`
 
 ### 6.2 Distributor — Sales Trend Mining
 **Problem:** Distributors have years of sales data in Tally/Excel/WhatsApp PDFs, no structured trend analysis.
 **Stack additions:** Excel ingestion (DuckDB), PDF invoice parser, seasonal pattern detection
-**Recipe:** `recipes/sales-trend-mining/`
+**Recipe:** `recipes/in/sales-trend-mining/`
 
 ### 6.3 School — Administrative Copilot
 **Problem:** School offices generate paper (attendance, marks, PTM schedules, parent queries). No AI handles this without sending data to US servers.
@@ -282,7 +282,7 @@ Sthala is the runtime placement layer. It does not define context lifecycle gove
 
 Sthala curates models, not trains them. Default choices are: open license (Apache 2.0 / MIT), CPU/single-GPU feasible, Indic-language capable, publicly benchmarked.
 
-See `models/models.md` for full catalog.
+See `docs/models.md` for full catalog.
 
 Default model: **Sarvam-30B** (MoE, 2.4B active params, Apache 2.0, fits 24GB VRAM at Q6_K).
 
@@ -304,7 +304,7 @@ SPEC changes require a CHANGELOG entry and migration notes.
 ## 12. Contributing
 
 - New vertical recipes via PR to `recipes/`
-- Model additions via PR to `models/models.md`
+- Model additions via PR to `docs/models.md`
 - Standards updates via PR to `SPEC.md` with citation
 - Hardware tier updates via PR with benchmark evidence
 

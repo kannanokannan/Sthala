@@ -31,7 +31,7 @@ SPEC.md           ← The law. Architecture decisions live here.
 AGENTS.md         ← How YOU (the AI agent) should build in this repo.
 profiles/         ← User-facing configuration. One YAML per vertical.
 stack/            ← The runtime. Docker Compose. Don't over-engineer.
-models/models.md  ← Curated model catalog. Links, not code.
+docs/models.md    ← Curated model catalog. Links, not code.
 recipes/          ← End-to-end vertical implementations.
 hardware/         ← Auto-detection and recommendation scripts.
 research/         ← Background research. Read for context, not for code.
@@ -141,7 +141,7 @@ Every recipe must have:
 6. Verification commands (how to confirm it works)
 7. Expected output samples (sanitised)
 
-### models/models.md
+### docs/models.md
 Every model entry must have: HuggingFace link, license, size (GB), min RAM, GPU needed (Y/N), min VRAM if GPU, "good at" and "bad at" fields.
 
 ---
@@ -150,7 +150,7 @@ Every model entry must have: HuggingFace link, license, size (GB), min RAM, GPU 
 
 ### Add a new vertical recipe
 1. Create `recipes/<name>/` directory
-2. Copy structure from `recipes/tally-ca-copilot/`
+2. Copy structure from `recipes/in/tally-ca-copilot/`
 3. Create `profiles/<name>.yaml`
 4. Add ingestion connector if new data source
 5. Add recipe to `README.md` recipe table
@@ -160,7 +160,7 @@ Every model entry must have: HuggingFace link, license, size (GB), min RAM, GPU 
 1. Verify: open license (Apache 2.0 / MIT preferred)
 2. Verify: fits at least Tier 2 hardware
 3. Verify: benchmarked publicly (MLPerf or equivalent)
-4. Add to `models/models.md` with all required fields
+4. Add to `docs/models.md` with all required fields
 5. Update relevant profiles if it becomes a recommended default
 
 ### Extend the stack

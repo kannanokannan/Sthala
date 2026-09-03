@@ -1,0 +1,13 @@
+include:
+  - ../../../stack/inference/docker-compose.yml
+  - ../../../stack/rag/docker-compose.yml
+  - ../../../stack/ingestion/docker-compose.yml
+  - ../../../stack/observability/docker-compose.yml
+
+# Recipe-level overrides for CA copilot
+services:
+  ingest:
+    environment:
+      - STHALA_PROFILE=accounting-firm
+      - STHALA_RECIPE=in/tally-ca-copilot
+      - STHALA_COUNTRY=in

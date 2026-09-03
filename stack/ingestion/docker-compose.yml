@@ -1,0 +1,78 @@
+version: "3.9"
+
+# Sthala — Ingestion stack
+# Redis:  job queue backend (Python RQ)
+# Ingest: Python RQ worker — parses docs, calls LLM, writes to DuckDB
+# UI:     Open WebUI — chat interface
+# Proxy:  Caddy — reverse proxy + auto-HTTPS
+
+x-common: &common
+  restart: unless-stopped
+  networks:
+    - sthala
+
+services:
+
+  # ── Job queue ─────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: sthala-redis
+    volumes:
+      - ${STHALA_DATA:-/var/sthala/data}/jobs:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    <<: *common
+
+  # ── Ingestion worker ──────────────────────────────────────────────────────
+  ingest:
+    image: python:3.12-slim
+    container_name: sthala-ingest
+    working_dir: /app
+    command: python -m rq worker --url redis://redis:6379 ingest
+    volumes:
+      - ../../stack/ingest:/app
+      - ${STHALA_DATA:-/var/sthala/data}:/data
+    environment:
+      - STHALA_PROFILE=${STHALA_PROFILE:-generic}
+      - INFERENCE_URL=http://gateway:8080/v1
+      - VECTOR_URL=http://vector:6333
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    <<: *common
+
+  # ── Web UI ────────────────────────────────────────────────────────────────
+  ui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: sthala-ui
+    environment:
+      - OLLAMA_BASE_URL=http://gateway:8080
+      - WEBUI_SECRET_KEY=${WEBUI_SECRET:-change-me-in-production}
+    volumes:
+      - ${STHALA_DATA:-/var/sthala/data}/ui:/app/backend/data
+    ports:
+      - "3000:8080"
+    <<: *common
+
+  # ── Reverse proxy ─────────────────────────────────────────────────────────
+  proxy:
+    image: caddy:2-alpine
+    container_name: sthala-proxy
+    volumes:
+      - ../../config/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ${STHALA_DATA:-/var/sthala/data}/caddy:/data
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - ui
+    <<: *common
+
+networks:
+  sthala:
+    driver: bridge

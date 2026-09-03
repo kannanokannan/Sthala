@@ -1,0 +1,51 @@
+version: "3.9"
+
+# Sthala — RAG stack
+# Qdrant: vector store (embedded, no external server)
+# MinIO:  S3-compatible local object storage
+
+x-common: &common
+  restart: unless-stopped
+  networks:
+    - sthala
+
+services:
+
+  # ── Vector store ──────────────────────────────────────────────────────────
+  vector:
+    image: qdrant/qdrant:latest
+    container_name: sthala-vector
+    volumes:
+      - ${STHALA_DATA:-/var/sthala/data}/vectors:/qdrant/storage
+    ports:
+      - "6333:6333"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    <<: *common
+
+  # ── Object storage (S3-compatible local) ─────────────────────────────────
+  storage:
+    image: minio/minio:latest
+    container_name: sthala-storage
+    command: server /data --console-address ":9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_USER:-sthala}
+      - MINIO_ROOT_PASSWORD=${MINIO_PASS:-sthala-local-2026}
+    volumes:
+      - ${STHALA_DATA:-/var/sthala/data}/input:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    <<: *common
+
+networks:
+  sthala:
+    driver: bridge
