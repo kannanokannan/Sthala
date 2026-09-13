@@ -1,0 +1,4 @@
+# Shell scripts must keep LF endings on every platform.
+# Without this, a Windows checkout with core.autocrlf=true converts them and
+# bash fails with "syntax error near unexpected token" on the first block.
+*.sh text eol=lf
