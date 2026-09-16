@@ -6,6 +6,8 @@ Most AI deployments let LLMs touch everything — computation, decisions, execut
 
 An open-source reference framework for governed AI runtime placement on commodity x86 hardware. Airgapped by default. Built for SMBs, CA firms, clinics, schools — any organisation where data movement must stay under explicit boundary control.
 
+Sthala answers a placement question that applies at any scale. This repository is the reference profile for one end of it; larger estates apply the same questions to cloud, hybrid and edge placement. It is one of the reference implementations of the Context Stack specification, alongside `contextboundary-gw` and Griha.
+
 > *"Sthala" (स्थल / ஸ்தலம்) — place, site, ground. Where your AI actually runs.*
 
 ---
