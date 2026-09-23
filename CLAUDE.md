@@ -198,7 +198,11 @@ Every model entry must have: HuggingFace link, license, size (GB), min RAM, GPU 
 - **ContextOps** — `https://github.com/kannanokannan/ContextOps` — AI context governance
 - **ContextBoundary** — `https://github.com/kannanokannan/ContextBoundary` — Egress contracts
 
-Sthala is the runtime placement layer. ContextOps governs context lifecycle. ContextBoundary defines what can flow where. The three projects are complementary, with Sthala consuming ContextBoundary's egress contract.
+ContextOps and ContextBoundary are the specification layer. contextboundary-gw, Sthala and Griha are reference implementations that apply it.
+
+The composition is defined once, in COMPOSITION.md: https://github.com/kannanokannan/context-stack/blob/main/COMPOSITION.md
+
+Sthala is a reference implementation. It applies both specifications and consumes ContextBoundary's egress contract.
 
 ---
 
