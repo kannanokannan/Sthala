@@ -268,13 +268,16 @@ egress_policy:
 
 ## 9. Relationship to ContextOps / ContextBoundary
 
-| Framework | Governs |
+Sthala is a reference implementation. It applies the two specifications:
+
+| Specification | Defines |
 |---|---|
 | ContextOps | How AI context is captured, curated, supplied, and renewed across an organisation |
 | ContextBoundary | Where AI context can flow — defines egress contracts and Egress Tiers |
-| Sthala | Where AI runs — the runtime placement reference that implements ContextBoundary contracts |
 
-Sthala is the runtime placement layer. It does not define context lifecycle governance (ContextOps) or egress contracts (ContextBoundary). It implements them.
+Sthala does not define context lifecycle governance (ContextOps) or egress contracts (ContextBoundary). It implements them, at the runtime placement boundary.
+
+ContextOps and ContextBoundary are the specification layer. contextboundary-gw, Sthala and Griha are reference implementations that apply it. The composition is defined once, in [COMPOSITION.md](https://github.com/kannanokannan/context-stack/blob/main/COMPOSITION.md).
 
 ---
 
@@ -312,5 +315,5 @@ See `CONTRIBUTING.md` *(planned)*.
 
 ---
 
-*Sthala is part of the ContextOps / ContextBoundary / Sthala open-source family.*
+*Sthala is part of the [Context Stack](https://github.com/kannanokannan/context-stack).*
 *Apache 2.0 — build on it freely.*

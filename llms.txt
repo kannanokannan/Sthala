@@ -2,11 +2,11 @@
 
 > Open-source governed AI runtime placement reference framework for commodity x86 hardware. Airgapped by default. Core constraint: LLMs narrate, code computes — enforced at build time.
 
-Sthala is one of three sibling open-source projects under github.com/kannanokannan that together define an AI governance stack:
+Sthala is a reference implementation of the Context Stack. It applies ContextOps and ContextBoundary to governed runtime placement.
 
-- ContextOps — How does an organisation govern its AI context?
-- ContextBoundary — Where is data allowed to go?
-- Sthala — Where does the AI actually run?
+ContextOps and ContextBoundary are the specification layer. contextboundary-gw, Sthala and Griha are reference implementations that apply it.
+
+The composition is defined once, in COMPOSITION.md: https://github.com/kannanokannan/context-stack/blob/main/COMPOSITION.md
 
 License: Apache 2.0. Status: v0.1 Alpha.
 
@@ -19,6 +19,6 @@ License: Apache 2.0. Status: v0.1 Alpha.
 
 ## Related projects
 
-- [context-stack](https://github.com/kannanokannan/context-stack): Canonical terminology, locked decisions, and family framing for all three projects
+- [context-stack](https://github.com/kannanokannan/context-stack): Canonical terminology, locked decisions, and family framing
 - [ContextOps](https://github.com/kannanokannan/ContextOps): AI context governance framework
 - [ContextBoundary](https://github.com/kannanokannan/ContextBoundary): Egress governance specification for AI data flows

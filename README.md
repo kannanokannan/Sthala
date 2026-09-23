@@ -6,7 +6,7 @@ Most AI deployments let LLMs touch everything — computation, decisions, execut
 
 An open-source reference framework for governed AI runtime placement on commodity x86 hardware. Airgapped by default. Built for SMBs, CA firms, clinics, schools — any organisation where data movement must stay under explicit boundary control.
 
-Sthala answers a placement question that applies at any scale. This repository is the reference profile for one end of it; larger estates apply the same questions to cloud, hybrid and edge placement. It is one of the reference implementations of the Context Stack specification, alongside `contextboundary-gw` and Griha.
+Sthala answers a placement question that applies at any scale. This repository is the reference profile for one end of it; larger estates apply the same questions to cloud, hybrid and edge placement. It is a reference implementation: it applies ContextOps and ContextBoundary.
 
 > *"Sthala" (स्थल / ஸ்தலம்) — place, site, ground. Where your AI actually runs.*
 
@@ -30,16 +30,6 @@ Full doctrine: https://github.com/kannanokannan/context-stack
 - **Refurb hardware works** — a ₹1.5L node serves 50–200 concurrent SMB users on 7B–34B models
 
 Sthala is **not** a product. It is a documented pattern. Read it, fork it, deploy it, adapt it.
-
----
-
-## Family
-
-| Project | Role |
-|---|---|
-| [ContextOps](https://github.com/kannanokannan/ContextOps) | How to govern AI context |
-| [ContextBoundary](https://github.com/kannanokannan/ContextBoundary) | Where AI context can flow |
-| **Sthala** | Where AI actually runs |
 
 ---
 
@@ -146,18 +136,14 @@ Apache 2.0 — use it, fork it, ship it, build on it.
 
 [Kannan Okannan](https://github.com/kannanokannan) — Chennai, India
 
-*Part of the ContextOps / ContextBoundary / Sthala open-source family.*
+*Part of the [Context Stack](https://github.com/kannanokannan/context-stack).*
 
 ---
 
 ## Part of the Stack
 
-This project is one of three sibling open-source projects under [github.com/kannanokannan](https://github.com/kannanokannan).
+ContextOps and ContextBoundary are the specification layer. contextboundary-gw, Sthala and Griha are reference implementations that apply it. The composition is defined once, in [COMPOSITION.md](https://github.com/kannanokannan/context-stack/blob/main/COMPOSITION.md).
 
-| Project | Question | Repo |
-|---------|----------|------|
-| ContextOps | How does an org govern its AI context? | [github.com/kannanokannan/ContextOps](https://github.com/kannanokannan/ContextOps) |
-| ContextBoundary | Where is data allowed to go? | [github.com/kannanokannan/ContextBoundary](https://github.com/kannanokannan/ContextBoundary) |
-| Sthala | Where does the AI actually run? | [github.com/kannanokannan/Sthala](https://github.com/kannanokannan/Sthala) |
+Sthala is a reference implementation. It applies ContextOps and ContextBoundary to governed runtime placement.
 
 Canonical terminology and cross-project decisions: [context-stack](https://github.com/kannanokannan/context-stack)
